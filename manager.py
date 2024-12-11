@@ -6,7 +6,7 @@ from watchdog.events import FileSystemEventHandler
 #Categories that will be observed
 categories = {
     "Documents": [".pdf", ".docx", ".xlsx",".csv",".r",".py",".txt",".rtf"],
-    "Images": [".jpg", ".png", ".gif",".jpeg",".webp",".NEF"],
+    "Images": [".jpg", ".png", ".gif",".jpeg",".webp",".nef"],
     "Videos": [".mp4", ".mov"],
     "Compressed Files": [".zip", ".rar",".7zip"],
     "Executables":[".exe",".jar"],
@@ -26,8 +26,8 @@ class FileHandler(FileSystemEventHandler):
     def organize_existing_items(self):
         #Checks for any existing files on the directory
         print("Organizing existing files...")
-        for item in os.listdir(downloads_directory):
-            item_path = os.path.join(downloads_directory, item)
+        for item in os.listdir(self.base_dir):
+            item_path = os.path.join(self.base_dir, item)
             if os.path.isfile(item_path):
                 self.organize_file(item_path)
         print("Files Organized!")
@@ -37,7 +37,7 @@ class FileHandler(FileSystemEventHandler):
         _, ext = os.path.splitext(filepath)
         for category, extensions in categories.items():
             if ext.lower() in extensions:
-                dest_dir = os.path.join(downloads_directory, category)
+                dest_dir = os.path.join(self.base_dir, category)
                 os.makedirs(dest_dir, exist_ok=True)
                 shutil.move(filepath, dest_dir)
                 print(f"File {os.path.basename(filepath)} moved to {dest_dir}")
